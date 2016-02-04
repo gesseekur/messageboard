@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Broadcast</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
+    <script>
+    	$(document).ready(function(){
+    		var socket = io.connect();
+    		var name;
+    		while (!name) {
+    			name = prompt("Please enter a username!");
+    		};
+
+    		// socket.emit("requestName", {name:name});
+
+    		function requestName(name) {
+    			socket.emit("requestName", {name:name});
+    		};
+
+    		requestName(name);
+    		socket.on('errorNoName', function(data){
+    			// console.log(data.error);
+    			name = prompt(data.error);
+    			requestName(name);
+    		});
+
+    		socket.on('serverMsg', function(data) {
+    			$("#board").append('<p>' + data.msg + '</p>');
+    		});
+
+
+    		$('form').submit(function(){
+    			var data = $('input').val();
+                $('input').val('');
+    			socket.emit("requestChat", {msg: data});
+                return false;
+    		});
+
+    		
+    	});
+
+    </script>
+	<style type="text/css">
+        body {
+            background-image:url("https://i.ytimg.com/vi/jm2XdBx1g4U/maxresdefault.jpg");
+            height:1000px;
+        }
+
+		h1{
+			font-family:"Gloria Hallelujah"
+		}
+
+		input[type="text"] {
+			width:200px;
+		}
+		/*#text {
+			margin-left:360px;
+		}*/
+
+		#board {
+            background-color:#eceff1 ;
+			height:400px;
+			width:500px;
+			border:1px solid black;
+			/*margin:10px auto;*/
+		}
+
+        .name {
+            color:blue;
+        }
+	</style>
+</head>
+<body>
+    <div class="container">
+       <h1>Message Board</h1>
+	   <div id = "board">
+	</div>
+	<div id="text">
+    	<form>
+    		<input type="text" placeholder="enter your msg here">
+    		<input type="submit" class="waves-effect waves-light indigo darken-3 btn " value="Submit">
+    	</form>
+    </div>
+    </div>
+</body>
+</html>
