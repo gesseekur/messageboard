@@ -1,3 +1,4 @@
+<h3>Message Board</h3>
 A project created for easy group messaging - powered by Sockets and MEAN.
 
 
